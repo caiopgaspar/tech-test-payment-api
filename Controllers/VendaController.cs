@@ -17,14 +17,13 @@ namespace tech_test_payment_api.Controllers
             _context = context;
         }
 
-        [HttpPost("{RegistrarVenda}")]
-        public IActionResult RegistrarVenda (Venda venda) //EnumStatusVenda status)
+        [HttpPost("RegistrarVenda")]
+        public IActionResult RegistrarVenda (Venda venda)
         {
-            // _context.Vendedores.Find();
+            //_context.Add(vendedor);            
             _context.Add(venda);
+            _context.SaveChanges();
             
-            //receber status "AguardandoPagamento"
-
             return CreatedAtAction(nameof(BuscarVendaPorId), new { id = venda.VendaId }, venda);
         }
 
@@ -38,10 +37,29 @@ namespace tech_test_payment_api.Controllers
             return Ok(venda);
         }
 
-        [HttpPut("{AtualizarStatusVenda}")]
-        public IActionResult AtualizarStatusVenda (int id){
-            var venda = _context.Vendas.Update();
-        }
+        // [HttpPut("{AtualizarStatusVenda}")]
+        // public IActionResult AtualizarStatusVenda (int id){
+        //     var venda = _context.Vendas.Update();
+        // }
+
+
+        // [HttpPost("CadastroVendedor")]
+        // public IActionResult CadastroVendedor (Vendedor vendedor){
+        //     _context.Add(vendedor);
+        //     _context.SaveChanges();
+        //     return CreatedAtAction(nameof(BuscarTodosOsVendedores), new { id = vendedor.VendedorId }, vendedor);
+        // }
+
+        // [HttpGet("BuscarTodosOsVendedores")]
+        // public IActionResult BuscarTodosOsVendedores(int id)
+        // {          
+        //     var vendedoresBanco = _context.Vendedores.Find(id);
+
+        //     if ( vendedoresBanco == null)
+        //         return NotFound();
+            
+        //     return Ok(vendedoresBanco);
+        // }
 
 
 
