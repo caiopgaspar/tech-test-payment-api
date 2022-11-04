@@ -10,9 +10,12 @@ namespace tech_test_payment_api.Models
     {
         public int VendaId { get; set; }        
         public Vendedor Vendedor { get; set; }
+           
+        public int Quantidade { get; set; }
+        public string Item { get; set; }
+
         public DateTime DataVenda { get; set; }
-        public string ItensVenda { get; set; }
-        public  EnumStatusVenda Status { get; set; }
+        public EnumStatusVenda Status { get; set; }
 
        
 

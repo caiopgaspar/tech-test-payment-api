@@ -13,41 +13,44 @@ namespace tech_test_payment_api.Migrations
                 name: "Vendedores",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    VendedorId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nome = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Cpf = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Telefone = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Vendedores", x => x.Id);
+                    table.PrimaryKey("PK_Vendedores", x => x.VendedorId);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Vendas",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    VendaId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    VendedorVendaId = table.Column<int>(type: "int", nullable: true),
+                    VendedorId = table.Column<int>(type: "int", nullable: true),
+                    Quantidade = table.Column<int>(type: "int", nullable: false),
+                    Item = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DataVenda = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ItensVenda = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Vendas", x => x.Id);
+                    table.PrimaryKey("PK_Vendas", x => x.VendaId);
                     table.ForeignKey(
-                        name: "FK_Vendas_Vendedores_VendedorVendaId",
-                        column: x => x.VendedorVendaId,
+                        name: "FK_Vendas_Vendedores_VendedorId",
+                        column: x => x.VendedorId,
                         principalTable: "Vendedores",
-                        principalColumn: "Id");
+                        principalColumn: "VendedorId");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Vendas_VendedorVendaId",
+                name: "IX_Vendas_VendedorId",
                 table: "Vendas",
-                column: "VendedorVendaId");
+                column: "VendedorId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

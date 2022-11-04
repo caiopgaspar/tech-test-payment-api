@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using tech_test_payment_api.Models;
 using tech_test_payment_api.Context;
+using System.Data;
 
 namespace tech_test_payment_api.Controllers
 {
@@ -20,16 +21,21 @@ namespace tech_test_payment_api.Controllers
         [HttpPost("RegistrarVenda")]
         public IActionResult RegistrarVenda (Venda venda)
         {
-            //_context.Add(vendedor);            
             _context.Add(venda);
+
+            if (venda.Quantidade == 0 || venda.Quantidade == null)
+                return NotFound();
+
             _context.SaveChanges();
             
             return CreatedAtAction(nameof(BuscarVendaPorId), new { id = venda.VendaId }, venda);
         }
 
-        [HttpGet("{BuscarVendaPorId}")]
+        [HttpGet("BuscarVendaPor{id}")]
         public IActionResult BuscarVendaPorId (int id){
-            var venda = _context.Vendas.Find(id);
+            Venda venda = _context.Vendas.Find(id);
+                       
+            _context.Entry(venda).Reference(x => x.Vendedor).Load();
 
             if ( venda == null)
                 return NotFound();
@@ -37,32 +43,40 @@ namespace tech_test_payment_api.Controllers
             return Ok(venda);
         }
 
-        // [HttpPut("{AtualizarStatusVenda}")]
-        // public IActionResult AtualizarStatusVenda (int id){
-        //     var venda = _context.Vendas.Update();
-        // }
+        [HttpPut("AtualizarStatusVenda{id}")]
+        public IActionResult AtualizarStatusVenda (int id, EnumStatusVenda novoStatus){
+            Venda vendaBanco = _context.Vendas.Find(id);
 
+            if (vendaBanco == null)
+                return NotFound();                        
+           
+            vendaBanco.Status = novoStatus;            
 
-        // [HttpPost("CadastroVendedor")]
-        // public IActionResult CadastroVendedor (Vendedor vendedor){
-        //     _context.Add(vendedor);
-        //     _context.SaveChanges();
-        //     return CreatedAtAction(nameof(BuscarTodosOsVendedores), new { id = vendedor.VendedorId }, vendedor);
-        // }
-
-        // [HttpGet("BuscarTodosOsVendedores")]
-        // public IActionResult BuscarTodosOsVendedores(int id)
-        // {          
-        //     var vendedoresBanco = _context.Vendedores.Find(id);
-
-        //     if ( vendedoresBanco == null)
-        //         return NotFound();
+            if (novoStatus == EnumStatusVenda.AguardandoPagamento) {
+                _context.Vendas.Update(vendaBanco);
+                if (vendaBanco.Status == EnumStatusVenda.PagamentoAprovado || vendaBanco.Status == EnumStatusVenda.Cancelada){
+                    return Ok(vendaBanco);
+                }
+            } else if (novoStatus == EnumStatusVenda.PagamentoAprovado) {
+                _context.Vendas.Update(vendaBanco);
+                if (vendaBanco.Status == EnumStatusVenda.Cancelada || vendaBanco.Status == EnumStatusVenda.EnviadoParaTransportadora){
+                    return Ok(vendaBanco);              
+                }
             
-        //     return Ok(vendedoresBanco);
-        // }
+            } else if (novoStatus == EnumStatusVenda.EnviadoParaTransportadora) {
+                _context.Vendas.Update(vendaBanco);
+                if (vendaBanco.Status == EnumStatusVenda.Entregue){
+                    return Ok(vendaBanco);
+                }
+            } else{
+                return NotFound();
+            }
 
+            _context.SaveChanges();
 
+            return Ok(vendaBanco);
 
-        
+        }
+
     }
 }

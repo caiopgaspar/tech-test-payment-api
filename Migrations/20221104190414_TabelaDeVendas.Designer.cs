@@ -12,7 +12,7 @@ using tech_test_payment_api.Context;
 namespace tech_test_payment_api.Migrations
 {
     [DbContext(typeof(VendaContext))]
-    [Migration("20221103185728_TabelaDeVendas")]
+    [Migration("20221104190414_TabelaDeVendas")]
     partial class TabelaDeVendas
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,35 +26,44 @@ namespace tech_test_payment_api.Migrations
 
             modelBuilder.Entity("tech_test_payment_api.Models.Venda", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("VendaId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VendaId"), 1L, 1);
 
                     b.Property<DateTime>("DataVenda")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("ItensVenda")
+                    b.Property<string>("Item")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("VendedorVendaId")
+                    b.Property<int>("Quantidade")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
-                    b.HasIndex("VendedorVendaId");
+                    b.Property<int?>("VendedorId")
+                        .HasColumnType("int");
+
+                    b.HasKey("VendaId");
+
+                    b.HasIndex("VendedorId");
 
                     b.ToTable("Vendas");
                 });
 
             modelBuilder.Entity("tech_test_payment_api.Models.Vendedor", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("VendedorId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VendedorId"), 1L, 1);
+
+                    b.Property<string>("Cpf")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
@@ -65,18 +74,18 @@ namespace tech_test_payment_api.Migrations
                     b.Property<string>("Telefone")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("VendedorId");
 
                     b.ToTable("Vendedores");
                 });
 
             modelBuilder.Entity("tech_test_payment_api.Models.Venda", b =>
                 {
-                    b.HasOne("tech_test_payment_api.Models.Vendedor", "VendedorVenda")
+                    b.HasOne("tech_test_payment_api.Models.Vendedor", "Vendedor")
                         .WithMany()
-                        .HasForeignKey("VendedorVendaId");
+                        .HasForeignKey("VendedorId");
 
-                    b.Navigation("VendedorVenda");
+                    b.Navigation("Vendedor");
                 });
 #pragma warning restore 612, 618
         }
