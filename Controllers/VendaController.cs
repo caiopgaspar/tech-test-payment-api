@@ -48,35 +48,44 @@ namespace tech_test_payment_api.Controllers
             Venda vendaBanco = _context.Vendas.Find(id);
 
             if (vendaBanco == null)
-                return NotFound();                        
-           
-            vendaBanco.Status = novoStatus;            
-
-            if (novoStatus == EnumStatusVenda.AguardandoPagamento) {
-                _context.Vendas.Update(vendaBanco);
-                if (vendaBanco.Status == EnumStatusVenda.PagamentoAprovado || vendaBanco.Status == EnumStatusVenda.Cancelada){
+                return NotFound();
+            
+            // vendaBanco.Status = novoStatus;
+                       
+            if (vendaBanco.Status == EnumStatusVenda.AguardandoPagamento) {
+                
+                if (novoStatus == EnumStatusVenda.PagamentoAprovado || novoStatus == EnumStatusVenda.Cancelada){
+                    vendaBanco.Status = novoStatus;
+                    _context.Vendas.Update(vendaBanco);
+                    _context.SaveChanges();
                     return Ok(vendaBanco);
+                } else{
+                    return BadRequest();
                 }
-            } else if (novoStatus == EnumStatusVenda.PagamentoAprovado) {
-                _context.Vendas.Update(vendaBanco);
-                if (vendaBanco.Status == EnumStatusVenda.Cancelada || vendaBanco.Status == EnumStatusVenda.EnviadoParaTransportadora){
+
+            } else if (vendaBanco.Status == EnumStatusVenda.PagamentoAprovado) { 
+
+                if (novoStatus == EnumStatusVenda.Cancelada || novoStatus == EnumStatusVenda.EnviadoParaTransportadora){
+                    vendaBanco.Status = novoStatus;
+                    _context.Vendas.Update(vendaBanco);
+                    _context.SaveChanges();
                     return Ok(vendaBanco);              
+                } else{
+                    return BadRequest();
                 }
             
-            } else if (novoStatus == EnumStatusVenda.EnviadoParaTransportadora) {
-                _context.Vendas.Update(vendaBanco);
-                if (vendaBanco.Status == EnumStatusVenda.Entregue){
+            } else if (vendaBanco.Status == EnumStatusVenda.EnviadoParaTransportadora) {
+
+                if (novoStatus == EnumStatusVenda.Entregue){
+                    vendaBanco.Status = novoStatus;
+                    _context.Vendas.Update(vendaBanco);
+                    _context.SaveChanges();
                     return Ok(vendaBanco);
                 }
             } else{
-                return NotFound();
-            }
-
-            _context.SaveChanges();
-
-            return Ok(vendaBanco);
-
-        }
-
+                return BadRequest();
+            } 
+            return BadRequest();
+        }       
     }
 }

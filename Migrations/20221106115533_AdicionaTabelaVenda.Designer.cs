@@ -12,8 +12,8 @@ using tech_test_payment_api.Context;
 namespace tech_test_payment_api.Migrations
 {
     [DbContext(typeof(VendaContext))]
-    [Migration("20221104190414_TabelaDeVendas")]
-    partial class TabelaDeVendas
+    [Migration("20221106115533_AdicionaTabelaVenda")]
+    partial class AdicionaTabelaVenda
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
